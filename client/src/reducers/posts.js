@@ -10,6 +10,8 @@ export default (posts=[], action)=>{
     {
         case 'UPDATE':
             return posts.map((post) => post._id === action.payload._id ? action.payload : post) //action.payload is updated post
+        case 'DELETE':
+            return posts.filter((post) => post._id !== action.payload); //action.payload is id which we do not want
         case 'FETCH_ALL':
             return action.payload; //posts
         case 'CREATE':
