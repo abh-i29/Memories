@@ -16,7 +16,9 @@ app.use(cors());
 
 app.use('/posts',postRoutes);
 
-app.get()
+app.get('/',(req,res)=>{
+    res.send('Hello Users to my Memories project');
+})
 
 // const CONNECTION_URL='MONGO_URL'
 const PORT=process.env.PORT;
