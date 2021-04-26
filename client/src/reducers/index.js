@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux';
 
 import posts from './posts';
+import auth from './auth';
 
 // import postsState from './posts'
 // this import posts represents state array
@@ -10,4 +11,4 @@ import posts from './posts';
 // as the name of imported value and key is same i.e posts
 // we can simply use it like done
 
-export default combineReducers({ posts }); 
+export default combineReducers({ posts, auth }); 

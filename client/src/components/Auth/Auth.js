@@ -2,12 +2,17 @@ import React, {useState} from 'react'
 import { Avatar, Button, Paper, Grid, Typography, Container} from '@material-ui/core'
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import useStyles from './styles';
+import { useDispatch } from 'react-redux';
+import { useHistory } from "react-router-dom";
+import { AUTH } from '../../constants/actionTypes';
 import Input from "./input";
 import { GoogleLogin } from "react-google-login";
 import Icon from "./icon";
 
 export const Auth = () => {
     const classes = useStyles();
+    const dispatch = useDispatch();
+    const history = useHistory();
     const [showPassword, setShowPassword] = useState(false);
     const [isSignup, setIsSignUp] = useState(false);
 
@@ -18,11 +23,25 @@ export const Auth = () => {
         setIsSignUp((prevIsSignUp)=> !prevIsSignUp)
         handleShowPassword(false);
     }
-    const googleSuccess = (res) =>{
-        console.log(res)
+    const googleSuccess = async (res) =>{
+        console.log("Google Sign In was Successful");
+        const result = res?.profileObj; 
+        // In JS, object.field throws error if object is 
+        // not there(cannot use property of undefined) but when we use
+        // object?.field it will assign undefined
+        // to that value if object doesnt exist
+        const token = res?.tokenId;
+        try {
+            // console.log(result)
+            dispatch({type: AUTH, data: {result,token}});
+            // redirect to home
+            history.push('/')
+        } catch (error) {
+            console.log(error)
+        }
     }
     const googleFailure = () =>{
-        console.log("Google Sign In was unsuccessfull, Try Again")
+        console.log("Google Sign In was unsuccessfull, Try Again");
     }
     return (
         <Container component="main" maxWidth="xs">
@@ -34,6 +53,8 @@ export const Auth = () => {
                 <form className={classes.form} onSubmit={handleSubmit}>
                     <Grid container spacing={2}>
                         {
+                            // isSignup && means a ternary operator 
+                            // which says if this true then show else null
                             isSignup && (
                                 <>
                                     <Input name="firstName" label="First Name" handleChange={handleChange} autoFocus half/>
@@ -45,8 +66,11 @@ export const Auth = () => {
                         <Input name="password" label="Password" handleChange={handleChange} type={showPassword ? "text": "password"} handleShowPassword={handleShowPassword}/>
                         { isSignup && <Input name="confirmPassword" label="Repeat Password" handleChange={handleChange} type="password"/>}
                     </Grid>
+                    <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
+                        {isSignup ? 'Sign Up': 'Sign In'}
+                    </Button>
                     <GoogleLogin
-                        clientId="Google"
+                        clientId="921275445362-rngcqffn2a41nclh5e798a1uqkgjqj2o.apps.googleusercontent.com"
                         render={(renderProps)=> (
                             <Button 
                             className={classes.googleButton} 
@@ -64,9 +88,6 @@ export const Auth = () => {
                         onFailure={googleFailure}
                         cookiePolicy="single_host_origin"
                     />
-                    <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
-                        {isSignup ? 'Sign Up': 'Sign In'}
-                    </Button>
                     <Grid container justify="flex-end">
                         <Grid item>
                             <Button onClick={switchMode}>
