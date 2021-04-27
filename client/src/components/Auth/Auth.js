@@ -8,20 +8,35 @@ import { AUTH } from '../../constants/actionTypes';
 import Input from "./input";
 import { GoogleLogin } from "react-google-login";
 import Icon from "./icon";
+import { signup, signin } from "../../actions/auth";
 
 export const Auth = () => {
+    const initialState={firstName: "", lastName: "", email:"", password:"", confirmPassword:""}
     const classes = useStyles();
     const dispatch = useDispatch();
     const history = useHistory();
     const [showPassword, setShowPassword] = useState(false);
     const [isSignup, setIsSignUp] = useState(false);
+    const [formData, setFormData] = useState(initialState);
 
-    const handleChange = ()=>setShowPassword((prevShowPassword)=> !prevShowPassword)
-    const handleSubmit = ()=>{}
-    const handleShowPassword = ()=>{}
+    const handleShowPassword = ()=>setShowPassword((prevShowPassword)=> !prevShowPassword)
+    const handleSubmit = (e)=>{
+        // e=Event
+        // in browser, the default setting is to 
+        // refresh when submit is pressed
+        e.preventDefault();
+        if(isSignup) {
+            dispatch(signup(formData,history))
+        } else {
+            dispatch(signin(formData,history))
+        }
+    }
+    const handleChange = (e)=>{
+        setFormData({...formData, [e.target.name]: e.target.value});
+    }
     const switchMode = ()=>{
         setIsSignUp((prevIsSignUp)=> !prevIsSignUp)
-        handleShowPassword(false);
+        setShowPassword(false);
     }
     const googleSuccess = async (res) =>{
         console.log("Google Sign In was Successful");
@@ -64,7 +79,7 @@ export const Auth = () => {
                         }
                         <Input name="email" label="Email Address" handleChange={handleChange} type="email"/>
                         <Input name="password" label="Password" handleChange={handleChange} type={showPassword ? "text": "password"} handleShowPassword={handleShowPassword}/>
-                        { isSignup && <Input name="confirmPassword" label="Repeat Password" handleChange={handleChange} type="password"/>}
+                        { isSignup && <Input name="confirmPassword" label="Confirm Password" handleChange={handleChange} type="password"/>}
                     </Grid>
                     <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
                         {isSignup ? 'Sign Up': 'Sign In'}
