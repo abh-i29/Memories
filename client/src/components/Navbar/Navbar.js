@@ -24,17 +24,20 @@ export const Navbar = () => {
     }
     // When location changes it works
     useEffect(() => {
-        const token = user?.token;
-        
-        if(token) {
-            const decodedToken = decode(token);
+        const checkToken=()=>{
 
-            if(decodedToken.exp*1000 < new Date().getTime()) logout();
+            const token = user?.token;
+            
+            if(token) {
+                const decodedToken = decode(token);
+    
+                if(decodedToken.exp*1000 < new Date().getTime()) logout();
+            }
+    
+            setUser(JSON.parse(localStorage.getItem('profile')))
         }
-
-        setUser(JSON.parse(localStorage.getItem('profile')))
-
-    }, [location])
+        checkToken();
+    }, [location]) // eslint-disable-line react-hooks/exhaustive-deps
 
     return (
         <AppBar className={classes.appBar} position="static" color="inherit">

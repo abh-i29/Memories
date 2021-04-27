@@ -5,8 +5,7 @@ import { FETCH_ALL,CREATE,UPDATE,DELETE,LIKE } from '../constants/actionTypes';
 
 // exported posts array
 
-
-export default (posts=[], action)=>{
+const postReducer= (posts=[], action)=>{
     switch(action.type)
     {
         case UPDATE:
@@ -24,3 +23,5 @@ export default (posts=[], action)=>{
     }
 
 }
+
+export default postReducer;
